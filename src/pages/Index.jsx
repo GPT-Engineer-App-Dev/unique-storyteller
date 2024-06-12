@@ -1,7 +1,16 @@
-import { Container, Box, Heading, Text, VStack, HStack, Divider, IconButton } from "@chakra-ui/react";
+import { Container, Box, Heading, Text, VStack, HStack, Divider, IconButton, Button } from "@chakra-ui/react";
 import { FaTwitter, FaLinkedin, FaGithub } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const Index = () => {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const savedPosts = JSON.parse(localStorage.getItem('posts')) || [];
+    setPosts(savedPosts);
+  }, []);
+
   return (
     <Container maxW="container.lg" p={4}>
       <VStack spacing={8} align="stretch">
@@ -13,27 +22,36 @@ const Index = () => {
           <Text fontSize="lg" color="gray.600">
             Thoughts, stories and ideas.
           </Text>
+          <Button as={Link} to="/add-post" colorScheme="blue" mt={4}>
+            Add New Post
+          </Button>
         </Box>
 
         <Divider />
 
         {/* Latest Post */}
-        <Box>
-          <Heading as="h2" size="xl" mb={4}>
-            Latest Post
-          </Heading>
-          <Box p={4} borderWidth="1px" borderRadius="lg" overflow="hidden">
-            <Heading as="h3" size="lg" mb={2}>
-              My First Blog Post
-            </Heading>
-            <Text fontSize="md" color="gray.600" mb={4}>
-              June 1, 2023
-            </Text>
-            <Text>
-              This is the excerpt of my first blog post. It's just a preview of the content. Click to read more.
-            </Text>
-          </Box>
-        </Box>
+        {posts.length > 0 ? (
+          posts.map((post, index) => (
+            <Box key={index}>
+              <Heading as="h2" size="xl" mb={4}>
+                {post.title}
+              </Heading>
+              <Box p={4} borderWidth="1px" borderRadius="lg" overflow="hidden">
+                <Heading as="h3" size="lg" mb={2}>
+                  {post.title}
+                </Heading>
+                <Text fontSize="md" color="gray.600" mb={4}>
+                  {post.date}
+                </Text>
+                <Text>
+                  {post.content}
+                </Text>
+              </Box>
+            </Box>
+          ))
+        ) : (
+          <Text>No posts available.</Text>
+        )}
 
         <Divider />
 
